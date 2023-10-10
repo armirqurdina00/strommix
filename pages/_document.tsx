@@ -13,6 +13,7 @@ class MyDocument extends Document {
 						rel='stylesheet'
 						href='https://fonts.googleapis.com/icon?family=Material+Icons'
 					/>
+					<script src="https://kit.fontawesome.com/24919df5c9.js" crossOrigin="anonymous"></script>
 				</Head>
 				<body>
 					<Main />
