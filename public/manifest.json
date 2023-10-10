@@ -1,0 +1,24 @@
+{
+	"name": "B2C Origin",
+	"short_name": "B2C Origin",
+	"description": "Herkunftsnachweis für Grünen Strom - Ihre Energie-Transparenz in der Tasche!",
+	"icons": [
+		{
+			"src": "/images/favicon.png",
+			"type": "image/png",
+			"sizes": "256x256"
+		},
+		{
+			"src": "/images/maskable-icon-256.png",
+			"type": "image/png",
+			"sizes": "256x256",
+			"purpose": "any maskable"
+		}
+	],
+	"start_url": "/?source=pwa",
+	"background_color": "#1d2020",
+	"orientation": "portrait",
+	"display": "standalone",
+	"scope": "/",
+	"theme_color": "#1d2020"
+}

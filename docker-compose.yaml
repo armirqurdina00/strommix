@@ -1,0 +1,11 @@
+version: '3'
+services:
+  webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: b2c_origin:latest
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env.local

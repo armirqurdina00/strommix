@@ -1,0 +1,41 @@
+# Docker
+# Build a Docker image
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+  - main
+
+resources:
+  - repo: self
+
+variables:
+  - group: b2e2_apis_blockinfinity
+  - name: tag
+    value: '$(Build.BuildId)'
+
+stages:
+  - stage: Build
+    displayName: Build image
+    jobs:
+      - job: Build
+        displayName: Build
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+
+          - script: npm i playwright && npm i @playwright/test && npx playwright install
+            displayName: Install e2e test framework
+
+          # Running the tests which internally builds the Docker image using docker-compose
+          - script: npm run test
+            displayName: Run Tests
+
+          - script: |
+              docker login b2e2registry.azurecr.io -u b2e2registry -p $(CONTAINER_REGISTRY_PW)
+            displayName: Login to Container Registry.
+          - script: |
+              docker tag b2c_origin:latest b2e2registry.azurecr.io/b2c_origin:$(Build.BuildId)
+            displayName: Tag the latest image.
+          - script: |
+              docker push b2e2registry.azurecr.io/b2c_origin:$(Build.BuildId)
+            displayName: Push image to registry.

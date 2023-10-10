@@ -1,0 +1,56 @@
+{
+	"name": "next-pwa-template",
+	"version": "0.0.0",
+	"license": "MIT",
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "next lint",
+		"test": "docker-compose up --build -d && ./wait-for-it.sh localhost:3000 -- npx playwright test"
+	},
+	"dependencies": {
+		"@auth0/nextjs-auth0": "^3.0.0",
+		"@emotion/react": "^11.11.1",
+		"@emotion/styled": "^11.11.0",
+		"@fontsource/roboto": "^5.0.5",
+		"@mui/icons-material": "^5.14.1",
+		"@mui/material": "^5.14.2",
+		"@types/googlemaps": "^3.43.3",
+		"@types/react": "^18.2.20",
+		"axios": "^1.4.0",
+		"dotenv": "^16.3.1",
+		"fs": "^0.0.1-security",
+		"jwt-decode": "^3.1.2",
+		"moment": "^2.29.4",
+		"mui-file-input": "^3.0.0",
+		"next": "^13.4.12",
+		"next-compose-plugins": "^2.2.1",
+		"next-pwa": "^5.5.2",
+		"next-themes": "^0.2.0",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"@playwright/test": "^1.38.0"
+	},
+	"devDependencies": {
+		"@types/node": "^17.0.35",
+		"autoprefixer": "^10.4.7",
+		"eslint": "^8.16.0",
+		"eslint-config-next": "^13.4.12",
+		"eslint-config-prettier": "^8.5.0",
+		"openapi-typescript-codegen": "^0.25.0",
+		"playwright": "^1.37.0",
+		"postcss": "^8.4.14",
+		"prettier": "^2.6.2",
+		"prettier-plugin-tailwindcss": "^0.1.11",
+		"tailwindcss": "^3.0.24",
+		"tailwindcss-safe-area": "^0.2.2",
+		"typescript": "^4.6.4"
+	},
+	"prettier": {
+		"semi": false,
+		"singleQuote": true,
+		"jsxSingleQuote": true,
+		"useTabs": true
+	}
+}
