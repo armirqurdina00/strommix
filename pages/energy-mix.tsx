@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react'
 import Page from '@/components/page'
 import { useRouter } from 'next/router'
+import Chart from '@/components/chart';
 
 const EnergyMix = () => {
 	const router = useRouter()
@@ -41,20 +42,19 @@ const EnergyMix = () => {
 			onTouchEnd={onTouchEnd}
 		>
 			<Page>
-				<div className='mt-5 flex justify-center'>
+				<div className='flex justify-center'>
 					<div
-						className={`flex max-w-sm flex-col ${
-							isSwiped && 'slideOutToLeftAnimation'
-						}`}
+						className={`flex max-w-sm flex-col bg-blue-800 ${isSwiped && 'slideOutToLeftAnimation'
+							}`}
 					>
 
-						<p className='mb-5 font-bold'>User Story 1:</p>
-
-						<p>
-							"Als Otto-Normal- und Poweruser-Stromkonsument
-							möchte ich wissen, durch welche Methode mein Strom erzeugt wurde,
-							um besser über dessen Nachhaltigkeit informiert zu sein."​
-						</p>
+						<h1 className='my-5 font-bold text-2xl text-center text-white'>Strommix</h1>
+						<Chart />
+						<div className='overflow-scroll whitespace-nowrap'>
+							<Chart />
+							<Chart />
+							<Chart />
+						</div>
 					</div>
 				</div>
 			</Page>
