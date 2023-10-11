@@ -2,6 +2,9 @@ import React, { useState, useRef } from 'react'
 import Page from '@/components/page'
 import { useRouter } from 'next/router'
 import Chart from '@/components/chart';
+import PieChartSelect from '@/components/PieChartSelect';
+import FrequencySelect from '@/components/FrequencySelect';
+import FreqBarChart from '@/components/FreqBarChart';
 
 const EnergyMix = () => {
 	const router = useRouter()
@@ -44,40 +47,44 @@ const EnergyMix = () => {
 			<Page>
 				<div className='flex justify-center'>
 					<div
-						className={`flex max-w-sm flex-col bg-blue-800 ${isSwiped && 'slideOutToLeftAnimation'
+						className={`flex max-w-sm flex-col bg-[#00149A] w-full ${isSwiped && 'slideOutToLeftAnimation'
 							}`}
 					>
 
-						<h1 className='my-5 font-bold text-2xl text-center text-white'>Strommix</h1>
-						<div className='flex items-center overflow-scroll'>
-							<div className='text-sm text-white m-5 leading'>
-								<div className='flex items-center w-max leading-1'>
-									<i className="fa-solid fa-thumbs-up text-2xl" style={{ color: '#11ff00' }}></i>
-									<p className='mx-5'>Wir konnten Ihren</p>
-								</div>
-								<div className='flex w-max'>
-									<i className="fa-solid fa-thumbs-down text-2xl" style={{ color: 'red' }}></i>
-									<p className='mx-5'>Energiewunsch erfüllen</p>
-								</div>
+						<h1 className='my-5 font-bold text-3xl text-center text-white'>Strommix</h1>
+						<div className='flex items-center text-[12px] w-full justify-center'>
+							<div className='flex items-center mx-1'>
+								<i className="fa-solid fa-wind text-[lightblue] text-lg"></i>
+								<p className='mx-1 text-white'>Windkraft</p>
 							</div>
-							<div className='flex items-center mx-2'>
-								<i className="fa-solid fa-wind text-[lightblue] text-2xl"></i>
-								<p className='mx-2 text-white'>Windkraft</p>
+							<div className='flex items-center mx-1'>
+								<i className="fa-solid fa-sun text-[yellow] text-lg"></i>
+								<p className='mx-1 text-white'>Photovoltaik</p>
 							</div>
-							<div className='flex items-center mx-2'>
-								<i className="fa-solid fa-sun text-[yellow] text-2xl"></i>
-								<p className='mx-2 text-white'>Photovoltaic</p>
+							<div className='flex items-center mx-1'>
+								<i className="fa-solid fa-water text-blue-600 text-lg"></i>
+								<p className='mx-1 text-white'>Wasserkraft</p>
 							</div>
-							<div className='flex items-center mx-2'>
-								<i className="fa-solid fa-bolt-lightning text-[lightgray] text-2xl"></i>
-								<p className='mx-2 text-white leading-5'>Unerwünschter Graustrom</p>
+							<div className='flex items-center mx-1'>
+								<i className="fa-solid fa-bolt-lightning text-[#BBBBBB] text-lg"></i>
+								<p className='mx-1 text-white leading-5'>Andere</p>
 							</div>
 						</div>
+						<div className='flex justify-end mt-5'>
+							<PieChartSelect />
+						</div>
 						<Chart />
-						<div className='overflow-scroll whitespace-nowrap'>
-							<Chart />
-							<Chart />
-							<Chart />
+						<div className='w-[80%] mx-auto'>
+							<div className='flex items-center text-white'>
+								<i className="fa-solid fa-thumbs-up text-[#00ff59] text-3xl mx-3"></i>
+								<p className='leading-5'>Wir konnten Ihren Energieswunsch erfüllen!</p>
+							</div>
+						</div>
+						<div className='flex justify-end my-5'>
+							<FrequencySelect />
+						</div>
+						<div className='pb-20'>
+							<FreqBarChart />
 						</div>
 					</div>
 				</div>
