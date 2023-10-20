@@ -11,9 +11,9 @@ body {
 	-webkit-touch-callout: none;
 }
 
-::-webkit-scrollbar{
+/* ::-webkit-scrollbar{
 	display: none;
-}
+} */
 
 .loader {
 	border-top-color: #3498db;

@@ -54,7 +54,7 @@ const FreqBarChart = () => {
                 <YAxis stroke='white' fontSize={14} />
                 {/* <Tooltip /> */}
                 {/* <Legend /> */}
-                <Bar dataKey="windkraft" stackId="a" fill="#C8FFF8" isAnimationActive={false} />
+                <Bar dataKey="windkraft" stackId="a" fill="#C8FFF8" />
                 <Bar dataKey="photovoltaik" stackId="a" fill='#FFEC00' />
                 <Bar dataKey="wasserkraft" stackId="a" fill='blue' />
                 <Bar dataKey="andere" stackId="a" fill='#AAAAAA' />

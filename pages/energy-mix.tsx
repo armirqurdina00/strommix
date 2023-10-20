@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react'
 import Page from '@/components/page'
 import { useRouter } from 'next/router'
-import Chart from '@/components/chart';
-import PieChartSelect from '@/components/PieChartSelect';
-import FrequencySelect from '@/components/FrequencySelect';
+import EnergyDistributionChart from '@/components/EnergyDistributionChart';
+import EnergyDistributionChartSelect from '@/components/EnergyDistributionChartSelect';
+import FreqBarChartSelect from '@/components/FreqBarChartSelect';
 import FreqBarChart from '@/components/FreqBarChart';
+import EnergyLegend from '@/components/EnergyLegend';
 
 const EnergyMix = () => {
 	const router = useRouter()
@@ -52,28 +53,11 @@ const EnergyMix = () => {
 					>
 
 						<h1 className='my-5 font-bold text-3xl text-center text-white'>Strommix</h1>
-						<div className='flex items-center text-[12px] w-full justify-center'>
-							<div className='flex items-center mx-1'>
-								<i className="fa-solid fa-wind text-[lightblue] text-lg"></i>
-								<p className='mx-1 text-white'>Windkraft</p>
-							</div>
-							<div className='flex items-center mx-1'>
-								<i className="fa-solid fa-sun text-[yellow] text-lg"></i>
-								<p className='mx-1 text-white'>Photovoltaik</p>
-							</div>
-							<div className='flex items-center mx-1'>
-								<i className="fa-solid fa-water text-blue-600 text-lg"></i>
-								<p className='mx-1 text-white'>Wasserkraft</p>
-							</div>
-							<div className='flex items-center mx-1'>
-								<i className="fa-solid fa-bolt-lightning text-[#BBBBBB] text-lg"></i>
-								<p className='mx-1 text-white leading-5'>Andere</p>
-							</div>
-						</div>
+						<EnergyLegend />
 						<div className='flex justify-end mt-5'>
-							<PieChartSelect />
+							<EnergyDistributionChartSelect />
 						</div>
-						<Chart />
+						<EnergyDistributionChart />
 						<div className='w-[80%] mx-auto'>
 							<div className='flex items-center text-white'>
 								<i className="fa-solid fa-thumbs-up text-[#00ff59] text-3xl mx-3"></i>
@@ -81,7 +65,7 @@ const EnergyMix = () => {
 							</div>
 						</div>
 						<div className='flex justify-end my-5'>
-							<FrequencySelect />
+							<FreqBarChartSelect />
 						</div>
 						<div className='pb-20'>
 							<FreqBarChart />
