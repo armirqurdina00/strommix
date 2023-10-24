@@ -13,9 +13,14 @@
 			"type": "image/png",
 			"sizes": "256x256",
 			"purpose": "any maskable"
+		},
+		{
+			"src": "/images/icon-512.png",
+			"type": "image/png",
+			"sizes": "512x512"
 		}
 	],
-	"start_url": "/?source=pwa",
+	"start_url": "/",
 	"background_color": "#1d2020",
 	"orientation": "portrait",
 	"display": "standalone",

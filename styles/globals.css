@@ -11,9 +11,10 @@ body {
 	-webkit-touch-callout: none;
 }
 
-/* ::-webkit-scrollbar{
-	display: none;
-} */
+body {
+	color: white;
+	background: #000099;
+}
 
 .loader {
 	border-top-color: #3498db;

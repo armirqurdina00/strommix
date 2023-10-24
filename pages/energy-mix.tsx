@@ -1,80 +1,138 @@
-import React, { useState, useRef } from 'react'
-import Page from '@/components/page'
-import { useRouter } from 'next/router'
-import EnergyDistributionChart from '@/components/EnergyDistributionChart';
-import EnergyDistributionChartSelect from '@/components/EnergyDistributionChartSelect';
-import FreqBarChartSelect from '@/components/FreqBarChartSelect';
-import FreqBarChart from '@/components/FreqBarChart';
-import EnergyLegend from '@/components/EnergyLegend';
+import React from 'react';
+import Page from '@/components/page';
+import { Fade, ThemeProvider, createTheme} from '@mui/material';
+import Legend from '@/components/Legend';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import LaunchIcon from '@mui/icons-material/Launch';
+import PieChart from '../components/PieChart';
+import StackedBarChart from '../components/StackedBarChart';
+import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers';
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import 'dayjs/locale/de';
+import StackedBarChartDropDown from '@/components/StackedBarChartDropDown';
+import { Frequency } from '@/enums';
 
-const EnergyMix = () => {
-	const router = useRouter()
-	const [isSwiped, setIsSwiped] = useState(false)
+const CustomDatePickerTheme = createTheme({
+  components: {
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          '&:hover': {
+            cursor: 'pointer',
+          },
+          '& fieldset': {
+            borderColor: 'black',
+            borderWidth: '2px'
+          },
+          '&:hover fieldset': {
+            borderColor: 'black',
+            borderWidth: '2px'
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: 'black',
+          },
+        },
+        input: {
+          padding: '8px 15px',
+          cursor: 'pointer',
+        },
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        input: {
+          color: 'white',
+          textAlign: 'center'
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          color: 'white',
+          '&.Mui-focused': {
+            color: 'white'
+          },
+          '&.MuiInputLabel-shrink': {
+            color: 'white'
+          }
+        }
+      }
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          width: '120px',
+        },
+      },
+    },
+  },
+});
 
-	const touchStartRef = useRef(null)
-	const touchEndRef = useRef(null)
+export default function EnergyMix() {
 
-	const minSwipeDistance = 100
-
-	const onTouchStart = (e) => {
-		touchEndRef.current = null
-		touchStartRef.current = e.targetTouches[0].clientX
-	}
-
-	const onTouchMove = (e) => (touchEndRef.current = e.targetTouches[0].clientX)
-
-	const onTouchEnd = () => {
-		if (!touchStartRef.current || !touchEndRef.current) return
-
-		const distance = touchStartRef.current - touchEndRef.current
-		const isRightSwipe = distance < -minSwipeDistance
-		const isLeftSwipe = distance > minSwipeDistance
-
-		if (isLeftSwipe) {
-			setIsSwiped(!isSwiped)
-			router.push('/map')
-		}
-
-		touchStartRef.current = null
-		touchEndRef.current = null
-	}
-
-	return (
-		<div
-			onTouchStart={onTouchStart}
-			onTouchMove={onTouchMove}
-			onTouchEnd={onTouchEnd}
-		>
-			<Page>
-				<div className='flex justify-center'>
-					<div
-						className={`flex max-w-sm flex-col bg-[#00149A] w-full ${isSwiped && 'slideOutToLeftAnimation'
-							}`}
-					>
-
-						<h1 className='my-5 font-bold text-3xl text-center text-white'>Strommix</h1>
-						<EnergyLegend />
-						<div className='flex justify-end mt-5'>
-							<EnergyDistributionChartSelect />
-						</div>
-						<EnergyDistributionChart />
-						<div className='w-[80%] mx-auto'>
-							<div className='flex items-center text-white'>
-								<i className="fa-solid fa-thumbs-up text-[#00ff59] text-3xl mx-3"></i>
-								<p className='leading-5'>Wir konnten Ihren Energieswunsch erfüllen!</p>
-							</div>
-						</div>
-						<div className='flex justify-end my-5'>
-							<FreqBarChartSelect />
-						</div>
-						<div className='pb-20'>
-							<FreqBarChart />
-						</div>
-					</div>
-				</div>
-			</Page>
-		</div>
-	)
+  return (
+    <Page>
+      <div className='flex flex-col items-center'>
+        <div className='flex flex-col w-full max-w-screen-sm items-between justify-around' style={{marginBottom: 50}}>
+          <div>
+            <h1 className='text-3xl text-white mt-3 mb-3 flex justify-center'>Strommix</h1>
+            <Fade in={true} timeout={1500}>
+              <div>
+                <Legend />
+              </div>
+            </Fade>
+          </div>
+          <div>
+            <Fade in={true} timeout={1500}>
+              <div className='flex w-full justify-between px-5 sm:px-10 mt-4'>
+                <div />
+                <ThemeProvider theme={CustomDatePickerTheme}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
+                    <MobileDatePicker
+                      defaultValue={dayjs('2023-08-05')}
+                      label="Seit"
+                    />
+                  </LocalizationProvider>
+                </ThemeProvider>
+              </div>
+            </Fade>
+            <div className='h-[220px] w-full '>
+              <PieChart />
+            </div>
+            <div className='mt-3 flex w-full justify-center px-5'>
+              <Fade in={true} timeout={1500}>
+                <div className='flex items-center gap-3'>
+                  <ThumbUpIcon className='text-green-400' />
+                  <p>
+                    Wir konnten ihren{' '}
+                    <span className='text-xl font-medium text-enbw-orange'>
+                      Energiewunsch
+                    </span>
+                    <span>
+                      <LaunchIcon className='relative bottom-2 ml-1 text-sm text-enbw-orange' />
+                    </span>
+                    <br />
+                    erfüllen!
+                  </p>
+                </div>
+              </Fade>
+            </div>
+          </div>
+          <Fade in={true} timeout={1500}>
+            <div>
+              <div className='mt-3 flex w-full justify-between px-5 sm:px-10'>
+                <div />
+                <StackedBarChartDropDown defaultValue={Frequency.Monthly}/>
+              </div>
+              <div className='h-[250px] w-full'>
+                <StackedBarChart />
+              </div>
+            </div>
+          </Fade>
+        </div>
+      </div>
+    </Page>
+  );
 }
-
-export default EnergyMix

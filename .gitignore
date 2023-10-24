@@ -1,3 +1,6 @@
+$ Backup files
+*~
+
 # Generated via Next.js
 .next
 
@@ -10,3 +13,7 @@ node_modules
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+# Other generated files
+/.tern-port
+.env.local

@@ -1,6 +1,12 @@
 # Stage 1: Build backend and frontend
 FROM node:18-slim AS builder
 
+# Accept the build argument
+ARG NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+
+# Use the ARG as an environment variable
+ENV NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=$NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+
 WORKDIR /app
 
 COPY ./package*.json ./

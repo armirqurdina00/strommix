@@ -1,0 +1,10 @@
+#!/bin/bash
+
+cd "$(dirname "$0")"/..
+
+./check_linter.sh
+returnValue="$?"
+if (( "$returnValue" != 0 ))
+then
+	exit "$returnValue"
+fi
