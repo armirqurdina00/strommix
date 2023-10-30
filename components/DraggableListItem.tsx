@@ -88,17 +88,17 @@ export function DraggableListItem({children, onDrop, defaultRestingPositionX, de
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
     >
-      <Grid container>
+      <Grid container alignItems="center">
         <Grid item xs={10}>
           {children}
         </Grid>
         <Grid item xs={1}></Grid>
         <Grid item xs={1}>
           <button onClick={onButtonUpClick}>
-            <KeyboardArrowUpIcon />
+            <KeyboardArrowUpIcon sx={{fontSize: 30}} />
           </button>
           <button onClick={onButtonDownClick}>
-            <KeyboardArrowDownIcon />
+            <KeyboardArrowDownIcon sx={{fontSize: 30}} />
           </button>
         </Grid>
       </Grid>
