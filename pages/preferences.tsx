@@ -1,14 +1,13 @@
 import React from 'react';
 import Page from '@/components/page';
-import {DraggableList} from '@/components/DraggableList';
-import {Grid, Typography} from '@mui/material';
 import {config} from '@/config';
 import WindPowerIcon from '@mui/icons-material/WindPower';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import WaterIcon from '@mui/icons-material/Water';
-import {DoubleBulletButton} from '@/components/DoubleBulletButton';
-import {InfoMessage} from '@/components/InfoMessage';
-
+import { DoubleBulletButton } from '@/components/DoubleBulletButton';
+import CurrentEnergyWish from '@/components/preferences/CurrentEnergyWish';
+import FutureEnergyWish from '@/components/preferences/FutureEnergyWish';
+import Confirmation from '@/components/preferences/Confirmation';
 
 const listElements = [
   {
@@ -30,6 +29,8 @@ const listElements = [
 
 
 export default function Preferences() {
+  const [page, setPage] = React.useState(1);
+
   return (
     <div>
       <Page backgroundColor={config.colors.enbwBlue}>
@@ -41,69 +42,27 @@ export default function Preferences() {
               style={{
                 width: '80%',
                 margin: '10%',
-
+                height: '100%',
+                position: 'relative',
               }}
             >
-              <DoubleBulletButton
-                style={{marginBottom: 50}}
-                textLeft="Aktueller Energiewunsch"
-                textRight="Zukünftiger Energiewunsch"
-              />
-              <DraggableList
-                itemDistanceY={70}
-              >
-                {listElements.map((listElement, i) =>
-                  <div
-                    key={i}
-                    style={{
-                      width: '100%',
-                    }}
-                  >
-                    <Grid container>
-                      <Grid item xs={3}>
-                        <Typography
-                          color="white"
-                          fontSize={36}
-                          fontWeight="bold"
-                        >
-                          {i + 1}.
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={9}>
-                        <div style={{width: '100%', borderColor: listElement.color, borderWidth: 4, borderStyle: 'solid', borderRadius: 20, margin: 5}}>
-                          <Grid container>
-                            <Grid item xs={4}>
-                              <Typography
-                                color={listElement.color}
-                                fontSize={24}
-                                align="right"
-                              >
-                                {listElement.icon}
-                              </Typography>
-                            </Grid>
-                            <Grid item xs={1}>
-                            </Grid>
-                            <Grid item xs={7}>
-                              <Typography
-                                color="white"
-                                fontSize={24}
-                                fontWeight="bold"
-                                align="left"
-                              >
-                                {listElement.label}
-                              </Typography>
-                            </Grid>
-                          </Grid>
-                        </div>
-                      </Grid>
-                    </Grid>
-                  </div>
-                )}
-              </DraggableList>
-              <InfoMessage
-                style={{marginTop: 20}}
-                text="Wir setzen alles daran, Ihren Wünschen entsprechend zu handeln. Eine Garantie können wir jedoch nicht übernehmen."
-              />
+              {
+                page < 3 &&
+                  <DoubleBulletButton
+                    style={{ marginBottom: 50 }}
+                    textLeft="Aktueller Energiewunsch"
+                    textRight="Zukünftiger Energiewunsch"
+                    onClickLeft={() => { setPage(1); }}
+                    onClickRight={() => { setPage(2); }}
+                  />
+              }
+              {
+                page === 1 ?
+                  <CurrentEnergyWish listElements={listElements} /> :
+                  page === 2 ?
+                    <FutureEnergyWish listElements={listElements} moveToConfirmation={() => { setPage(3); }} /> :
+                    <Confirmation confirm={() => { setPage(1); }} />
+              }
             </div>
           </div>
         </div>

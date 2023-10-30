@@ -1,4 +1,5 @@
 import {config} from '@/config';
+import { StackedBarChartProps } from '@/types';
 import React from 'react';
 import {
   BarChart,
@@ -9,70 +10,14 @@ import {
   ReferenceLine,
 } from 'recharts';
 
-const rawData = [
-  {
-    month: 'Jan',
-    solar: 1000, // Reduced solar due to lower sunlight hours
-    wind: 800, // Adjusted wind energy production
-    other: 6000, // Estimated other energy sources
-    water: 1200, // Adjusted water energy production
-  },
-  {
-    month: 'Feb',
-    solar: 1100, // Slight increase in solar energy due to longer days
-    wind: 850, // Slight increase in wind energy
-    other: 5900, // Slight decrease in other energy sources
-    water: 1200, // Constant water energy production
-  },
-  {
-    month: 'Mär',
-    solar: 1300, // Increasing solar energy production
-    wind: 950, // Increasing wind energy production
-    other: 5700, // Decreasing other energy sources
-    water: 1200, // Constant water energy production
-  },
-  {
-    month: 'Apr',
-    solar: 1600, // Further increase in solar energy production
-    wind: 1100, // Further increase in wind energy
-    other: 5500, // Further decreasing other energy sources
-    water: 1200, // Constant water energy production
-  },
-  {
-    month: 'Mai',
-    solar: 1900, // Peak solar energy production
-    wind: 1300, // Peak wind energy production
-    other: 5300, // Further decreasing other energy sources
-    water: 1200, // Constant water energy production
-  },
-  {
-    month: 'Jun',
-    solar: 2100, // Peak solar energy production in June
-    wind: 1250, // Slight decrease in wind energy
-    other: 5200, // Slight decrease in other energy sources
-    water: 1200, // Constant water energy production
-  },
-];
+export default function StackedBarChart(props: StackedBarChartProps) {
 
-// Convert raw data to percentages
-const data = rawData.map((item) => {
-  const total = item.solar + item.wind + item.other + item.water;
-  return {
-    ...item,
-    solar: (item.solar / total) * 100,
-    wind: (item.wind / total) * 100,
-    other: (item.other / total) * 100,
-    water: (item.water / total) * 100,
-  };
-});
-
-export default function StackedBarChart() {
   return (
     <ResponsiveContainer>
       <BarChart
         width={500}
         height={300}
-        data={data}
+        data={props.energyData}
         margin={{
           top: 20,
           right: 30,
@@ -81,7 +26,7 @@ export default function StackedBarChart() {
         }}
       >
         <XAxis
-          dataKey='month'
+          dataKey='monthName'
           tick={{fill: 'white'}}
           axisLine={false}
           tickLine={false}

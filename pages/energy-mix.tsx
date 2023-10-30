@@ -1,76 +1,61 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Page from '@/components/page';
-import { Fade, ThemeProvider, createTheme} from '@mui/material';
+import { Fade, ThemeProvider} from '@mui/material';
 import Legend from '@/components/Legend';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import LaunchIcon from '@mui/icons-material/Launch';
 import PieChart from '../components/PieChart';
 import StackedBarChart from '../components/StackedBarChart';
-import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers';
+import {LocalizationProvider, MobileDatePicker} from '@mui/x-date-pickers';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import 'dayjs/locale/de';
 import StackedBarChartDropDown from '@/components/StackedBarChartDropDown';
 import { Frequency } from '@/enums';
+import { getEnergyData } from '@/utils/DummyAPI';
+import DatePickerTheme from '@/utils/DatePickerTheme';
+import { EnergyDataForStackedBarChart, EnergyMixProps } from '@/types';
 
-const CustomDatePickerTheme = createTheme({
-  components: {
-    MuiOutlinedInput: {
-      styleOverrides: {
-        root: {
-          '&:hover': {
-            cursor: 'pointer',
-          },
-          '& fieldset': {
-            borderColor: 'black',
-            borderWidth: '2px'
-          },
-          '&:hover fieldset': {
-            borderColor: 'black',
-            borderWidth: '2px'
-          },
-          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            borderColor: 'black',
-          },
-        },
-        input: {
-          padding: '8px 15px',
-          cursor: 'pointer',
-        },
-      },
-    },
-    MuiInputBase: {
-      styleOverrides: {
-        input: {
-          color: 'white',
-          textAlign: 'center'
-        },
-      },
-    },
-    MuiInputLabel: {
-      styleOverrides: {
-        root: {
-          color: 'white',
-          '&.Mui-focused': {
-            color: 'white'
-          },
-          '&.MuiInputLabel-shrink': {
-            color: 'white'
-          }
-        }
-      }
-    },
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          width: '120px',
-        },
-      },
-    },
-  },
-});
+export const getServerSideProps = async () => {
+  try {
+    const initialEnergyData = await getEnergyData(Frequency.Monthly);
+    return { props: { initialEnergyData } };
+  } catch(err) {
+    return { props: { initialEnergyData: [] } };
+  }
+};
 
-export default function EnergyMix() {
+export default function EnergyMix({ initialEnergyData }: EnergyMixProps) {
+
+  const [energyData, setEnergyData] = useState<EnergyDataForStackedBarChart[]>(initialEnergyData);
+
+  // Hack: Currently facing issues with Recharts not rendering correctly during Server Side Rendering.
+  useEffect(() => {
+    handleFrequencyChange(Frequency.Monthly)
+      .catch(err => {
+        throw err;
+      });
+  }, []);
+
+  const handleFrequencyChange = async (frequency: Frequency) => {
+    const energyData = await getEnergyData(frequency);
+    const processedData = energyData.map((item) => {
+      const total = item.solarKwh + item.windKwh + item.waterKwh + item.otherKwh;
+      return {
+        ...item,
+        monthName: monthName(item.monthInUnixMillis),
+        solar: (item.solarKwh / total) * 100,
+        wind: (item.windKwh / total) * 100,
+        water: (item.waterKwh / total) * 100,
+        other: (item.otherKwh / total) * 100,
+      };
+    });
+    setEnergyData(processedData);
+  };
+
+  const monthName = (monthInUnixMillis: number) => {
+    return new Date(monthInUnixMillis).toLocaleString('de-DE', { month: 'short' });
+  };
 
   return (
     <Page>
@@ -88,7 +73,7 @@ export default function EnergyMix() {
             <Fade in={true} timeout={1500}>
               <div className='flex w-full justify-between px-5 sm:px-10 mt-4'>
                 <div />
-                <ThemeProvider theme={CustomDatePickerTheme}>
+                <ThemeProvider theme={DatePickerTheme}>
                   <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
                     <MobileDatePicker
                       defaultValue={dayjs('2023-08-05')}
@@ -106,7 +91,7 @@ export default function EnergyMix() {
                 <div className='flex items-center gap-3'>
                   <ThumbUpIcon className='text-green-400' />
                   <p>
-                    Wir konnten ihren{' '}
+                    Wir konnten Ihren{' '}
                     <span className='text-xl font-medium text-enbw-orange'>
                       Energiewunsch
                     </span>
@@ -124,10 +109,10 @@ export default function EnergyMix() {
             <div>
               <div className='mt-3 flex w-full justify-between px-5 sm:px-10'>
                 <div />
-                <StackedBarChartDropDown defaultValue={Frequency.Monthly}/>
+                <StackedBarChartDropDown defaultValue={Frequency.Monthly} handleFrequencyChange={handleFrequencyChange}/>
               </div>
               <div className='h-[250px] w-full'>
-                <StackedBarChart />
+                <StackedBarChart energyData={energyData}/>
               </div>
             </div>
           </Fade>

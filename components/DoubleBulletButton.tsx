@@ -12,7 +12,7 @@ interface Props {
   style?: CSSProperties;
 }
 
-const linkStyle: CSSProperties = {textDecoration: 'none'};
+const linkStyle: CSSProperties = {textDecoration: 'none', cursor: 'pointer'};
 
 enum Side {LEFT, RIGHT}
 

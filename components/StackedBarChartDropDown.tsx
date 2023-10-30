@@ -4,8 +4,9 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Frequency } from '@/enums';
+import { StackedBarChartDropDownProps } from '@/types';
 
-function StackedBarChartDropDown({ defaultValue }: { defaultValue: Frequency}) {
+function StackedBarChartDropDown({ defaultValue, handleFrequencyChange }: StackedBarChartDropDownProps) {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [selectedValue, setSelectedValue] = useState(defaultValue);
 
@@ -19,6 +20,7 @@ function StackedBarChartDropDown({ defaultValue }: { defaultValue: Frequency}) {
 
   const handleMenuItemClick = (value: Frequency) => {
     setSelectedValue(value);
+    handleFrequencyChange(value);
     handleClose();
   };
 

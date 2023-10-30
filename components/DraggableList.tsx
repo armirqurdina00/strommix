@@ -29,6 +29,22 @@ export function DraggableList({children, itemDistanceY = 50}: Props) {
     return 0 + index * itemDistanceY;
   }
 
+  function handleUpClick(index: number) {
+    const newItems = [...items];
+    const item = newItems.splice(index, 1)[0];
+    const newIndex = index == 0 ? newItems.length : index - 1;
+    newItems.splice(newIndex, 0, item);
+    setItems(newItems);
+  }
+
+  function handleDownClick(index: number) {
+    const newItems = [...items];
+    const item = newItems.splice(index, 1)[0];
+    const newIndex = index == newItems.length ? 0 : index + 1;
+    newItems.splice(newIndex, 0, item);
+    setItems(newItems);
+  }
+
   // TODO: find better way to force react to re-render than to use a random value as the key
   // or set the positions in a different way
 
@@ -44,6 +60,8 @@ export function DraggableList({children, itemDistanceY = 50}: Props) {
             defaultRestingPositionX={10}
             defaultRestingPositionY={getRestingPositionY(i)}
             onDrop={({restingPositionY}) => updateItemPositions(i, restingPositionY)}
+            onButtonUpClick={() => { handleUpClick(i); }}
+            onButtonDownClick={() => { handleDownClick(i); }}
           >
             {item}
           </DraggableListItem>

@@ -5,6 +5,7 @@ import {EnergyConsumption, GenerationType} from '@/types';
 import {assertNever, NotYetImplementedError} from '@/shared';
 import {Card, CardMedia, Grid, Typography} from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {config} from '@/config';
 import GoogleMapsComponent, {MarkerProps} from '@/components/GoogleMapsComponent';
 import EnergyConsumptionDetails from '@/components/EnergyConsumptionDetails';
@@ -23,6 +24,34 @@ export default function Map() {
   const [selectedEnergyConsumption, setSelectedEnergyConsumption] = useState<EnergyConsumption | null>(null);
   const [showFullEnergyConsumptionInfo, setShowFullEnergyConsumptionInfo] = useState(false);
 
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientY);
+  };
+
+  const onTouchMove = (e: React.TouchEvent<HTMLDivElement>) => setTouchEnd(e.targetTouches[0].clientY);
+
+  const onTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    if(!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isUpSwipe = distance > minSwipeDistance;
+    const isDownSwipe = distance < -minSwipeDistance;
+
+    if(isUpSwipe) {
+      e.preventDefault();
+      setShowFullEnergyConsumptionInfo(true);
+    } else if(isDownSwipe) {
+      e.preventDefault();
+      setShowFullEnergyConsumptionInfo(false);
+    }
+  };
+
   const totalPowerConsumption = currentMonthEnergyConsumptions.reduce((p, c) => p + c.amount, 0);
 
   function formatPercentage(share: number) {
@@ -35,11 +64,13 @@ export default function Map() {
     return {
       position: getAveragePointOfMostExtremeCoordinates(cmec.generationPlant.polygon),
       polygon: cmec.generationPlant.polygon,
-      iconUrl: getIconOfGenerationType(cmec.generationPlant.generationType),
+      iconUrl: getIconOfGenerationType(cmec.generationPlant.generationType, selectedEnergyConsumption?.id === cmec.id),
       labelText: formatPercentage(cmec.amount / totalPowerConsumption),
       onClick: () => setSelectedEnergyConsumption(c => cmec.id === c?.id ? null : cmec),
     };
   });
+
+  const ExpandIcon = (showFullEnergyConsumptionInfo ? ExpandMoreIcon : ExpandLessIcon);
 
   return (
     <div>
@@ -66,7 +97,7 @@ export default function Map() {
             className={'flex flex-col'}
             style={{width: '100%', height: '100%', position: 'relative'}}
           >
-            <div style={{width: '100%', height: showFullEnergyConsumptionInfo ? '0px' : '100%', margin: 'auto'}}>
+            <div style={{width: '100%', height: '100%', margin: 'auto'}}>
               <GoogleMapsComponent
                 center={defaultCenter}
                 zoom={defaultZoom}
@@ -85,49 +116,54 @@ export default function Map() {
                   position: 'absolute',
                   bottom: '0px',
                   height: !showFullEnergyConsumptionInfo ? `${energyConsumptionInfoPaneHeighInPx}px` : '100%',
+                  transition: 'height 0.5s linear',
                   backgroundColor: config.colors.enbwBlue,
                 }}
-                onClick={() => setShowFullEnergyConsumptionInfo(!showFullEnergyConsumptionInfo)}
+                onTouchStart={onTouchStart}
+                onTouchMove={onTouchMove}
+                onTouchEnd={onTouchEnd}
               >
-                <Grid container spacing={2}>
-                  <Grid item xs={5}>
-                    <Card style={{borderRadius: '15px', margin: 10}}>
-                      <CardMedia
-                        component="img"
-                        image={selectedEnergyConsumption.generationPlant.pictureUrl}
-                        alt="picture of plant"
-                      />
-                    </Card>
+                <div className='lg:w-2/3 md:w-4/5 mx-auto'>
+                  <Grid container spacing={2}>
+                    <Grid item xs={5}>
+                      <Card style={{borderRadius: '15px', margin: 10}}>
+                        <CardMedia
+                          component="img"
+                          image={selectedEnergyConsumption.generationPlant.pictureUrl}
+                          alt="picture of plant"
+                        />
+                      </Card>
+                    </Grid>
+                    <Grid item xs={5}>
+                      <Typography
+                        color="white"
+                        fontSize={18}
+                        fontWeight="bold"
+                        style={{marginTop: 10}}
+                      >
+                        {selectedEnergyConsumption.generationPlant.name}
+                      </Typography>
+                      <Typography
+                        color="white"
+                        fontSize={12}
+                        fontWeight="bold"
+                        display="block"
+                      >
+                        {formatPercentage(selectedEnergyConsumption.amount / totalPowerConsumption)}<br />
+                        {`${selectedEnergyConsumption.amount} kWh verbraucht`}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={2}>
+                      <ExpandIcon sx={{fontSize: 40, color: config.colors.enbwOrange}} onClick={() => setShowFullEnergyConsumptionInfo(!showFullEnergyConsumptionInfo)} style={{cursor: 'pointer'}} />
+                    </Grid>
                   </Grid>
-                  <Grid item xs={5}>
-                    <Typography
-                      color="white"
-                      fontSize={18}
-                      fontWeight="bold"
-                      style={{marginTop: 10}}
-                    >
-                      {selectedEnergyConsumption.generationPlant.name}
-                    </Typography>
-                    <Typography
-                      color="white"
-                      fontSize={12}
-                      fontWeight="bold"
-                      display="block"
-                    >
-                      {formatPercentage(selectedEnergyConsumption.amount / totalPowerConsumption)}<br />
-                      {`${selectedEnergyConsumption.amount} kWh verbraucht`}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={2}>
-                    <ExpandLessIcon sx={{fontSize: 40, color: config.colors.enbwOrange}} />
-                  </Grid>
-                </Grid>
-                {
-                  selectedEnergyConsumption !== null && showFullEnergyConsumptionInfo &&
-                  <EnergyConsumptionDetails
-                    energyConsumption={selectedEnergyConsumption}
-                  />
-                }
+                  {
+                    selectedEnergyConsumption !== null && showFullEnergyConsumptionInfo &&
+                    <EnergyConsumptionDetails
+                      energyConsumption={selectedEnergyConsumption}
+                    />
+                  }
+                </div>
               </div>
             }
           </div>
@@ -137,16 +173,16 @@ export default function Map() {
   );
 }
 
-function getIconOfGenerationType(generationType: GenerationType) {
+function getIconOfGenerationType(generationType: GenerationType, selected: boolean) {
   switch(generationType) {
     case GenerationType.SOLAR:
       // TODO: figure out how scaling marker icons works properly
       // to avoid this ugly way of scaling. using class new google.maps.Size
       // for Icon attribute scaledSize works during hot reloading but does
       // not work in new builds.
-      return '/images/solar_50.png';
+      return selected ? '/images/solar_50_highlighted.png' : '/images/solar_50.png';
     case GenerationType.WIND:
-      return '/images/wind_50.png';
+      return selected ? '/images/wind_50_highlighted.png' : '/images/wind_50.png';
     case GenerationType.HYDRO:
       throw new NotYetImplementedError();
     case GenerationType.OTHER:

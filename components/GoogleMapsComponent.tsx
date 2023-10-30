@@ -52,10 +52,10 @@ export default function GoogleMapsComponent({center, zoom, markerDataArr, polygo
     if(map === null || mapBounds === undefined)
       return;
 
-    clearMarkers();
-
     (async function() {
       const {Marker} = await google.maps.importLibrary('marker') as google.maps.MarkerLibrary;
+
+      clearMarkers();
 
       markers.current = markerDataArr
         .filter(markerData =>

@@ -1,14 +1,18 @@
-import {ReactElement, useRef, useState} from 'react';
-
+import { Grid } from '@mui/material';
+import { ReactElement, useRef, useState } from 'react';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 interface Props {
   defaultRestingPositionX: number;
   defaultRestingPositionY: number;
   onDrop?: (arg0: {restingPositionX: number, restingPositionY: number}) => void,
   children: ReactElement;
+  onButtonUpClick: () => void;
+  onButtonDownClick: () => void;
 }
 
-export function DraggableListItem({children, onDrop, defaultRestingPositionX, defaultRestingPositionY}: Props) {
+export function DraggableListItem({children, onDrop, defaultRestingPositionX, defaultRestingPositionY, onButtonUpClick, onButtonDownClick}: Props) {
   const [restingPositionX, setRestingPositionX] = useState(defaultRestingPositionX);
   const [restingPositionY, setRestingPositionY] = useState(defaultRestingPositionY);
 
@@ -84,7 +88,20 @@ export function DraggableListItem({children, onDrop, defaultRestingPositionX, de
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
     >
-      {children}
+      <Grid container>
+        <Grid item xs={10}>
+          {children}
+        </Grid>
+        <Grid item xs={1}></Grid>
+        <Grid item xs={1}>
+          <button onClick={onButtonUpClick}>
+            <KeyboardArrowUpIcon />
+          </button>
+          <button onClick={onButtonDownClick}>
+            <KeyboardArrowDownIcon />
+          </button>
+        </Grid>
+      </Grid>
     </div>
   );
 }
